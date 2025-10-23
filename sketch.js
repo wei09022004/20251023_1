@@ -216,7 +216,7 @@ function draw() {
         fill(255, 181, 35); // 黃色
         text("成績良好，請再接再厲。", width / 2, height / 2 - 50);
         
-    } else {
+    } else if (percentage >= 0){
         fill(150);
         text("請加油...", width / 2, height / 2 - 50);
     }
