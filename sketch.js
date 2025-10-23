@@ -7,13 +7,13 @@ let maxScore = 0;
 let scoreText = ""; 
 
 // ----------------------------------------
-// 新增：煙火效果相關變數
+// 煙火效果相關變數
 // ----------------------------------------
 let fireworks = []; // 儲存活躍的煙火實例 (Firework class)
 let celebrationMode = false; // 滿分時為 true，持續發射煙火
 
 // ----------------------------------------
-// 新增：粒子類別 (Particle) - 模擬爆炸碎片
+// 粒子類別 (Particle) - 模擬爆炸碎片
 // ----------------------------------------
 class Particle {
     constructor(x, y, hue) {
@@ -32,10 +32,9 @@ class Particle {
     }
 
     show() {
-        // 使用 HSB 模式繪製粒子
+        // 確保在繪製粒子時使用 HSB 模式
         colorMode(HSB, 255); 
         noStroke();
-        // 設置顏色：色相(hue), 飽和度(255), 亮度(255), 透明度(lifespan)
         fill(this.hue, 255, 255, this.lifespan); 
         ellipse(this.pos.x, this.pos.y, 4, 4);
         
@@ -49,12 +48,12 @@ class Particle {
 }
 
 // ----------------------------------------
-// 新增：煙火類別 (Firework) - 模擬發射和爆炸
+// 煙火類別 (Firework) - 模擬發射和爆炸
 // ----------------------------------------
 class Firework {
     constructor(x, y) {
         this.pos = createVector(x, y);
-        this.vel = createVector(0, random(-12, -18)); // 更快的向上發射速度
+        this.vel = createVector(0, random(-12, -18)); // 向上發射的速度
         this.acc = createVector(0, 0.05); // 上升時的阻力/輕微重力
         this.exploded = false;
         this.explosionParticles = [];
@@ -65,10 +64,10 @@ class Firework {
 
     update() {
         if (!this.exploded) {
-            this.vel.add(this.acc); // 向上移動
+            this.vel.add(this.acc); 
             this.pos.add(this.vel);
             
-            // 爆炸條件：到達預定高度，或者速度開始變慢（y速度趨近於 0 或變正）
+            // 爆炸條件：到達預定高度，或速度開始變慢（y速度趨近於 0 或變正）
             if (this.pos.y < this.explosionHeight || this.vel.y >= 0) { 
                 this.explode();
             }
@@ -85,11 +84,11 @@ class Firework {
 
     show() {
         if (!this.exploded) {
-            // 繪製火箭上升的點（拖尾效果由 draw() 中的背景處理）
+            // 繪製火箭上升的點
             colorMode(HSB, 255); 
             fill(this.hue, 200, 255);
             ellipse(this.pos.x, this.pos.y, 5, 5);
-            colorMode(RGB, 255);
+            colorMode(RGB, 255); // 切回 RGB 模式
         } else {
             // 繪製爆炸後的粒子
             for (let particle of this.explosionParticles) {
@@ -114,7 +113,7 @@ class Firework {
 
 
 // =================================================================
-// 步驟二：H5P 分數接收邏輯
+// 步驟二：H5P 分數接收邏輯 (分數達標的程式碼)
 // -----------------------------------------------------------------
 
 window.addEventListener('message', function (event) {
@@ -134,7 +133,8 @@ window.addEventListener('message', function (event) {
         if (finalScore === maxScore && finalScore > 0) {
              // 滿分時啟動持續慶祝模式
              celebrationMode = true; 
-             loop(); // 確保 draw 循環持續運行
+             // 確保 draw 循環持續運行 
+             loop(); 
         } else {
             // 非滿分時停止慶祝
             celebrationMode = false;
@@ -157,7 +157,7 @@ function setup() {
     colorMode(RGB, 255); 
     createCanvas(windowWidth / 2, windowHeight / 2); 
     background(255); 
-    // 讓 draw 循環持續運行以處理潛在的 H5P 消息和動畫
+    // 讓 draw 循環持續運行以處理動畫
     loop(); 
 } 
 
@@ -167,8 +167,8 @@ function draw() {
     // A. 處理背景與煙火更新
     // -----------------------------------------------------------------
     
-    // 使用半透明黑色背景 (255, 30) 產生拖尾效果 (RGB模式)
-    // 讓背景漸漸淡化，形成殘影
+    // 使用半透明白色背景 (255, 30) 產生拖尾效果 (RGB模式)
+    // 這讓舊的煙火殘影逐漸淡出，是動畫效果的關鍵之一
     background(255, 30); 
     
     // 1. 持續發射新的煙火 (如果處於慶祝模式)
@@ -206,7 +206,7 @@ function draw() {
     if (percentage === 100) {
         // 滿分：強調慶祝
         fill(255, 200, 0); // 金黃色
-        text("🎉 滿分達成！慶祝中！ 🎉", width / 2, height / 2 - 50);
+        text("🎉 滿分達成！持續慶祝中！ 🎉", width / 2, height / 2 - 50);
         
     } else if (percentage >= 90) {
         fill(0, 200, 50); // 綠色
@@ -238,5 +238,4 @@ function draw() {
         rectMode(CENTER);
         rect(width / 2, height / 2 + 150, 150, 150);
     }
-    // 注意：這裡不切換回 HSB，讓 draw 結束時保持 RGB 模式，減少不必要的切換。
 }
