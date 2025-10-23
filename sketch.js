@@ -218,7 +218,7 @@ function draw() {
         
     } else {
         fill(150);
-        text("等待 H5P 分數...", width / 2, height / 2 - 50);
+        text("請加油...", width / 2, height / 2 - 50);
     }
 
     // 顯示具體分數
